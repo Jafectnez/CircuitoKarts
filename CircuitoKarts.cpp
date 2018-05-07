@@ -1,20 +1,28 @@
 #include <iostream> // Funciones y comandos necesarios(cin,cout)
-#include <dos.h> //Puertos, memoria, sistema dos
 #include <stdio.h> // Inputs y Outputs
 #include <conio.h> //Consola de entrada y salida
 #include <cstdlib> //Funciones que sirven para controlar ciertos recursos del sistema operativo
 #include <time.h> //Formato hora y fecha
 #include <stdlib.h>//Busqueda y ordenamiento de datos
 #include <unistd.h> //Librer�a que contiene funciones para el manejo de directorios y archivos
-#include <Windows.h> //Funciones Windows API	
-#include "Semaforo.h"
+#include <Windows.h> //Funciones Windows API
 #include "Semaforo.cpp"
-#include <stdio.h>
-#include <stdlib.h> 
+#include "Semaforo.h"
+//#include <wait.h> // esta libreria se agrego para poder hacer uso del metodo wait o espera en español
+//#include <sys/errno.h> // esta libreria se usa para el reconocimiento del comando errno, recurso
 
+#include  <fcntl.h>
+//#include  <sys/ipc.h> //librerias que llaman a semget semaforos identificadores
+//#include  <sys/sem.h> //librerias que llaman a semget semaforos identificadores
+//#include  <sys/stat.h>
+//#include  <sys/types.h> //librerias que llaman a semget semaforos identificadores
+
+#define SEM_CIR_A_OPEN = 1;
+#define SEM_CIR_N_OPEN = 1;
 
 using namespace std;
-//Declaracion de variables, metodos y arreglos
+
+//Declaracion de metodos, arreglos y variables
 bool circuitoAdulto;
 bool circuitoNino;
 void espera();
@@ -28,6 +36,7 @@ void asignarKartAdulto();
 void asignarKartNino();
 void verificar_kart();
 void verificar_clima();
+//void inicializar(int);
 
 string adultos[6] = {"Adulto 1", "Adulto 2", "Adulto 3", "Adulto 4", "Adulto 5", "Adulto 6"};
 string ninos[6] = {"Nino 1", "Nino 2", "Nino 3", "Nino 4", "Nino 5", "Nino 6"};
@@ -46,9 +55,19 @@ int num_random_clima = rand();
 int kartsAdultosDisponibles = 4;
 int kartsNinosDisponibles = 4;
 int tiempoConduccion = 3;
-Semaforo semaforo; 
+Semaforo semaforo;
+
+/*union senum {
+	int val;
+};
+
+struct sembuf{0, 1, 0} arriba;
+struct sembuf{0, -1, 0} abajo;*/
 
 int main(int argc, char** argv) {
+	
+	/*sem = semget(IPC_PRIVATE, 2, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR); /* Se crea un nuevo conjunto de semáforos nsems si la clave tiene el valor IPC_PRIVATE o si ningún conjunto de semáforos existente está asociado con la clave y IPC_CREAT está especificado en semflg.*/
+
 	while(true){
 		for(int i = 0; i < 24; i++){
 			if(i == 3 || i == 7 || i == 11 || i == 15 || i == 19 || i == 23){ //Para que el circuito cierre
@@ -89,9 +108,9 @@ int main(int argc, char** argv) {
 				for(int i = 0; i < tiempoConduccion; i++){//Verificacion tiempo de conduccion
 					cout << "Las personas estan conduciendo"<<endl;						
 					cout << endl;
-					//verificar_kart();
+					verificar_kart();
 					Sleep(2000);
-					//verificar_clima();
+					verificar_clima();
 				}
 				
 				cout << "El tiempo para conducir termin�" << endl;
@@ -330,3 +349,4 @@ void verificar_clima(){
 	}
 	system("COLOR 07" );
 }
+
